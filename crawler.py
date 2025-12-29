@@ -140,7 +140,19 @@ class WebCrawler:
             return True
         
         parsed_url = urlparse(url)
-        return any(domain in parsed_url.netloc for domain in self.config.allowed_domains)
+        netloc = parsed_url.netloc.lower()
+        
+        # 检查精确匹配或子域名匹配 (Check exact match or subdomain match)
+        for domain in self.config.allowed_domains:
+            domain = domain.lower()
+            # 精确匹配 (Exact match)
+            if netloc == domain:
+                return True
+            # 子域名匹配 (Subdomain match) - 确保是真正的子域名
+            if netloc.endswith('.' + domain):
+                return True
+        
+        return False
     
     async def fetch_url(self, url: str) -> Optional[str]:
         """

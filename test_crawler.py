@@ -110,8 +110,15 @@ class TestWebCrawler(unittest.TestCase):
         async def run_test():
             config = CrawlerConfig(allowed_domains=['example.com'])
             async with WebCrawler(config) as crawler:
+                # 应该允许的 (Should be allowed)
                 self.assertTrue(crawler.is_allowed_domain('https://example.com/page'))
+                self.assertTrue(crawler.is_allowed_domain('https://www.example.com/page'))
+                self.assertTrue(crawler.is_allowed_domain('https://sub.example.com/page'))
+                
+                # 不应该允许的 (Should not be allowed)
                 self.assertFalse(crawler.is_allowed_domain('https://other.com/page'))
+                self.assertFalse(crawler.is_allowed_domain('https://malicious-example.com/page'))
+                self.assertFalse(crawler.is_allowed_domain('https://examplecom.net/page'))
         
         asyncio.run(run_test())
     
