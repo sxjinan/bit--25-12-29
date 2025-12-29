@@ -64,16 +64,19 @@ class URLQueue:
         self.queue = deque()
         self.visited: Set[str] = set()
         self.in_progress: Set[str] = set()
+        self.queued: Set[str] = set()  # 跟踪已在队列中的URL (Track URLs already in queue)
         
     def add_url(self, url: str, depth: int = 0):
         """添加URL到队列 (Add URL to queue)"""
-        if url not in self.visited and url not in self.in_progress:
+        if url not in self.visited and url not in self.in_progress and url not in self.queued:
             self.queue.append((url, depth))
+            self.queued.add(url)
             
     def get_url(self) -> Optional[tuple]:
         """从队列获取URL (Get URL from queue)"""
         if self.queue:
             url, depth = self.queue.popleft()
+            self.queued.discard(url)
             self.in_progress.add(url)
             return url, depth
         return None
