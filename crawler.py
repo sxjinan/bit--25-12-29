@@ -14,7 +14,6 @@ import queue
 import time
 import logging
 from typing import Set, List, Optional
-from collections import deque
 
 
 class WebCrawler:
